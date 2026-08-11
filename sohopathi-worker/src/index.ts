@@ -5,6 +5,11 @@ interface Env {
   HF_API_KEY: string;
 }
 
+interface ChatMessage {
+  role: string;
+  text: string;
+}
+
 function cosineSimilarity(a: number[], b: number[]): number {
   let dot = 0, normA = 0, normB = 0;
   for (let i = 0; i < a.length; i++) {
@@ -36,27 +41,53 @@ function findTopChunks(queryEmbedding: number[], topN = 2) {
     score: cosineSimilarity(queryEmbedding, chunk.embedding)
   }));
   scored.sort((a, b) => b.score - a.score);
-  return scored.slice(0, topN).map(s => s.chunk);
+  return scored.slice(0, topN);
 }
 
-// Main text-answering model — no longer thinks about diagrams at all.
-async function askModel(question: string, studentClass: string, context: string, ollamaApiKey: string) {
+const RELEVANCE_THRESHOLD = 0.35;
+
+async function askModel(question: string, studentClass: string, context: string, history: ChatMessage[], ollamaApiKey: string) {
+  let historyText = '';
+  if (history && history.length > 0) {
+    const lastFew = history.slice(-6);
+    historyText = lastFew.map(m => `${m.role === 'user' ? 'শিক্ষার্থী' : 'সহপাঠী AI'}: ${m.text}`).join('\n');
+  }
+
   const prompt = `তুমি "সহপাঠী AI" — বাংলাদেশের ${studentClass || 'ষষ্ঠ থেকে দশম শ্রেণির'} শিক্ষার্থীদের জন্য একজন সহায়ক শিক্ষক।
 
-নিচের তথ্য ব্যবহার করে প্রশ্নের উত্তর দাও, কিন্তু "পাঠ্যবই" বা "প্রদত্ত তথ্য" এই ধরনের শব্দ ব্যবহার কোরো না — সরাসরি বিষয়টি ব্যাখ্যা করো, যেন তুমি নিজে থেকেই জানো।
+${historyText ? `আগের কথোপকথন:\n${historyText}\n\n` : ''}
 
-উত্তর এই নিয়ম মেনে দাও:
-- যদি শিক্ষার্থী শুধু একটি ছবি/ডায়াগ্রাম/চিত্র চায় (যেমন: "ছবি দাও", "ডায়াগ্রাম দেখাও"), তাহলে মাত্র ১ বাক্যে সংক্ষিপ্ত ক্যাপশন দাও — বিস্তারিত ব্যাখ্যা কোরো না।
-- অন্য যেকোনো প্রশ্নের ক্ষেত্রে: প্রথমে ১-২ বাক্যে সহজ সংজ্ঞা বা মূল ধারণা বুঝিয়ে দাও (গদ্য আকারে, বুলেট পয়েন্ট নয়), এরপর প্রয়োজন হলে সর্বোচ্চ ২-৩টি গুরুত্বপূর্ণ পয়েন্ট বুলেট আকারে দাও — এর বেশি না।
-- উত্তর সংক্ষিপ্ত রাখো, অপ্রয়োজনীয় বিস্তারিত বাদ দাও।
-- পুরো উত্তরে সবকিছু বুলেট পয়েন্টে ভাগ করার দরকার নেই — যেখানে সাধারণ বাক্য যথেষ্ট, সেখানে বাক্যেই লেখো।
-- কখনোই ASCII আর্ট বা টেক্সট দিয়ে ছবি আঁকার চেষ্টা কোরো না।
+নিচের তথ্য ব্যবহার করে প্রশ্নের উত্তর দাও। উত্তরটি এই ফরম্যাটে দাও (কোনো ইমোজি বা আইকন ব্যবহার করো না):
 
-ভাষা সম্পর্কে নিয়ম:
-- যদি শিক্ষার্থী প্রশ্নটি Banglish-এ লেখে (ইংরেজি হরফে বাংলা উচ্চারণ), তাহলেও প্রশ্নটি বুঝে নাও এবং স্বাভাবিক বাংলা হরফেই উত্তর দাও।
+[১-২ বাক্যে সহজ ভাষায় মূল সংজ্ঞা বা ধারণা]
+
+রাসায়নিক সমীকরণ (যদি প্রযোজ্য হয়):
+[সমীকরণটি সুন্দরভাবে লিখো]
+
+প্রয়োজনীয় উপাদান/শর্তাবলী:
+- [পয়েন্ট ১]
+- [পয়েন্ট ২]
+
+কোথায় ঘটে:
+[স্থান বা অঙ্গের নাম]
+
+গুরুত্ব/প্রয়োগ:
+- [পয়েন্ট ১]
+- [পয়েন্ট ২]
+
+সহজ ভাষায়:
+[একটি সংক্ষিপ্ত, সহজবোধ্য সারাংশ]
+
+নিয়ম:
+- বিজ্ঞান/জীববিজ্ঞান/রসায়ন/পদার্থবিজ্ঞান বিষয়ক প্রশ্নের জন্য এই ফরম্যাট ব্যবহার করো
+- যেকোনো প্রশ্নের জন্য ফরম্যাটের সব অংশ দেওয়ার প্রয়োজন নেই, শুধু প্রাসঙ্গিক অংশগুলো দাও
+- সহজ, সংক্ষিপ্ত এবং শিক্ষার্থীবান্ধব ভাষায় উত্তর দাও
+- তুমি টেক্সট-ভিত্তিক AI, তাই তুমি ছবি বা ডায়াগ্রাম তৈরি করতে পারো না। যদি কেউ ডায়াগ্রাম বা ছবি চায়, তাহলে তুমি শুধু লিখবে: "আমি টেক্সট-ভিত্তিক AI, তাই ছবি বা ডায়াগ্রাম তৈরি করতে পারি না। তবে আমি বিস্তারিত বর্ণনা দিতে পারি যা থেকে তুমি নিজে ডায়াগ্রাম আঁকতে পারবে।" এবং তারপর প্রশ্নের উত্তরের বর্ণনা দাও।
+- কখনোই ASCII আর্ট বা টেক্সট দিয়ে ছবি আঁকার চেষ্টা কোরো না
+- উত্তরের শুরুতে "সংজ্ঞা:" বা "পরিচয়:" জাতীয় কোনো শব্দ ব্যবহার করো না। সরাসরি সংজ্ঞা বা ব্যাখ্যা দিয়ে শুরু করো।
 
 প্রাসঙ্গিক তথ্য:
-${context}
+${context || '(এই বিষয়ে নির্দিষ্ট কোনো অধ্যায়ের তথ্য এখনো যোগ করা হয়নি — সাধারণ জ্ঞান থেকে উত্তর দাও)'}
 
 প্রশ্ন: ${question}
 
@@ -69,7 +100,7 @@ ${context}
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      model: 'gpt-oss:120b-cloud',
+      model: 'gemma4:31b-cloud',
       messages: [{ role: 'user', content: prompt }],
       stream: false
     })
@@ -78,90 +109,43 @@ ${context}
   return data.message?.content || 'দুঃখিত, উত্তর তৈরি করা যায়নি।';
 }
 
-// Dedicated diagram model — only job is to decide if a diagram helps, and if so, produce clean SVG.
-async function askDiagramModel(question: string, context: string, ollamaApiKey: string): Promise<string | null> {
-  const prompt = `তুমি একজন বিজ্ঞান শিক্ষার সহায়ক ডায়াগ্রাম ডিজাইনার।
-
-নিচের প্রশ্ন ও তথ্য দেখে সিদ্ধান্ত নাও: এই প্রশ্নের জন্য একটি সাধারণ, শিক্ষামূলক SVG ডায়াগ্রাম সত্যিই সাহায্য করবে কিনা।
-
-যদি সাহায্য করে, শুধুমাত্র নিচের ফরম্যাটে SVG কোড দাও — অন্য কিছু লিখো না, কোনো ব্যাখ্যা দিও না:
-\`\`\`svg
-<svg viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">...</svg>
-\`\`\`
-
-নিয়ম:
-- শুধু rect, circle, ellipse, line, polygon, path, text ব্যবহার করো। কোনো script, image, বা external resource ব্যবহার কোরো না।
-- viewBox অন্তত 400x260 রাখো, যথেষ্ট ফাঁকা জায়গা (padding) রাখো।
-- কোনো টেক্সট যেন অন্য শেপ বা অন্য টেক্সটের উপর ওভারল্যাপ না করে।
-- লেবেলগুলো শেপের বাইরে রাখো, প্রয়োজনে একটি ছোট leader line দিয়ে যুক্ত করো।
-- font-size কমপক্ষে 13px রাখো।
-- সর্বোচ্চ ৫-৬টি মূল উপাদান/লেবেল রাখো, বেশি জটিল কোরো না।
-- রঙ: রেখা/টেক্সটের জন্য #2B2823, প্রধান অংশের জন্য #C96442, দ্বিতীয় রঙ হিসেবে #2F5D3E।
-- বাংলা লেবেল <text> ট্যাগে সঠিকভাবে লেখো।
-- সম্পূর্ণ, বৈধ SVG কোড দাও — কখনোই অসম্পূর্ণ বা ভাঙা কোড দিও না।
-
-যদি ডায়াগ্রাম সাহায্য না করে (যেমন সংজ্ঞা বা তারিখ জিজ্ঞাসা করা প্রশ্নে), তাহলে শুধু একটি শব্দ লেখো: NONE
-
-প্রাসঙ্গিক তথ্য:
-${context}
-
-প্রশ্ন: ${question}`;
-
-  const res = await fetch('https://ollama.com/api/chat', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${ollamaApiKey}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      model: 'kimi-k2.6:cloud',
-      messages: [{ role: 'user', content: prompt }],
-      stream: false
-    })
-  });
-  const data: any = await res.json();
-  const content: string = data.message?.content || '';
-
-  if (content.trim() === 'NONE' || !content.includes('<svg')) return null;
-
-  const match = content.match(/```svg\s*([\s\S]*?)```/i) || content.match(/(<svg[\s\S]*<\/svg>)/i);
-  if (!match) return null;
-
-  const svg = match[1].trim();
-  // Basic sanity check — reject anything that doesn't look like real, complete SVG
-  if (!svg.startsWith('<svg') || !svg.includes('</svg>')) return null;
-
-  return svg;
-}
-
-// For questions that include an uploaded image — reads the image and answers directly.
 async function askVisionModel(question: string, studentClass: string, imageBase64: string, ollamaApiKey: string) {
-  // Strip the "data:image/...;base64," prefix if present — Ollama wants raw base64.
   const rawBase64 = imageBase64.includes(',') ? imageBase64.split(',')[1] : imageBase64;
 
   const prompt = `তুমি "সহপাঠী AI" — বাংলাদেশের ${studentClass || 'ষষ্ঠ থেকে দশম শ্রেণির'} শিক্ষার্থীদের জন্য একজন সহায়ক শিক্ষক। শিক্ষার্থী একটি ছবি পাঠিয়েছে। ছবিটি ভালোভাবে দেখো এবং তার প্রশ্নের উত্তর দাও।
 
-উত্তর এই নিয়ম মেনে দাও:
-- বাংলায়, সহজ ভাষায়, সংক্ষেপে উত্তর দাও
-- ছবিতে যা দেখছ তার উপর ভিত্তি করে সরাসরি উত্তর দাও
-- অপ্রয়োজনীয় বিস্তারিত এড়িয়ে চলো
+উত্তর বাংলায়, সহজ ভাষায়, সংক্ষেপে দাও। কোনো ইমোজি ব্যবহার করো না।
 
 প্রশ্ন: ${question}`;
 
-  const res = await fetch('https://ollama.com/api/chat', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${ollamaApiKey}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      model: 'qwen3-vl:235b-cloud',
-      messages: [{ role: 'user', content: prompt, images: [rawBase64] }],
-      stream: false
-    })
-  });
-  const data: any = await res.json();
-  return data.message?.content || 'দুঃখিত, ছবিটি বুঝতে সমস্যা হয়েছে।';
+  try {
+    const res = await fetch('https://ollama.com/api/chat', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${ollamaApiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'gemma4:31b-cloud',
+        messages: [{ 
+          role: 'user', 
+          content: prompt, 
+          images: [rawBase64] 
+        }],
+        stream: false
+      })
+    });
+
+    const raw = await res.text();
+    if (!res.ok) {
+      return `[ছবি প্রক্রিয়াকরণে ত্রুটি — স্ট্যাটাস ${res.status}]\n${raw}`;
+    }
+    let data: any;
+    try { data = JSON.parse(raw); } catch { return `[অবৈধ প্রতিক্রিয়া]\n${raw}`; }
+    return data.message?.content || `[খালি উত্তর পাওয়া গেছে]\n${raw}`;
+  } catch (err: any) {
+    return `[নেটওয়ার্ক ত্রুটি]\n${err.message}`;
+  }
 }
 
 export default {
@@ -184,7 +168,12 @@ export default {
     }
 
     try {
-      const { question, studentClass, image } = await request.json() as { question: string; studentClass: string; image?: string | null };
+      const { question, studentClass, image, history } = await request.json() as { 
+        question: string; 
+        studentClass: string; 
+        image?: string | null;
+        history?: ChatMessage[];
+      };
 
       if (!question || question.trim() === '') {
         return new Response(JSON.stringify({ error: 'প্রশ্ন খালি রাখা যাবে না' }), {
@@ -193,7 +182,6 @@ export default {
         });
       }
 
-      // If an image was attached, answer directly from the image — skip text retrieval.
       if (image) {
         const answer = await askVisionModel(question, studentClass, image, env.OLLAMA_API_KEY);
         return new Response(JSON.stringify({ answer }), {
@@ -202,20 +190,12 @@ export default {
       }
 
       const queryEmbedding = await getQueryEmbedding(question, env.HF_API_KEY);
-      const topChunks = findTopChunks(queryEmbedding, 2);
-      const context = topChunks.map((c: any) => c.text).join('\n\n');
+      const topScored = findTopChunks(queryEmbedding, 2);
+      const relevantChunks = topScored.filter(s => s.score >= RELEVANCE_THRESHOLD);
+      const context = relevantChunks.map(s => s.chunk.text).join('\n\n');
 
-      // Run the text answer and the diagram decision in parallel — same total wait time as before.
-      const [answer, diagramSvg] = await Promise.all([
-        askModel(question, studentClass, context, env.OLLAMA_API_KEY),
-        askDiagramModel(question, context, env.OLLAMA_API_KEY)
-      ]);
-
-      const finalAnswer = diagramSvg
-        ? `${answer}\n\n\`\`\`svg\n${diagramSvg}\n\`\`\``
-        : answer;
-
-      return new Response(JSON.stringify({ answer: finalAnswer }), {
+      const answer = await askModel(question, studentClass, context, history || [], env.OLLAMA_API_KEY);
+      return new Response(JSON.stringify({ answer }), {
         headers: { 'Content-Type': 'application/json', ...corsHeaders }
       });
 
