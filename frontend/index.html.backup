@@ -23,7 +23,26 @@
     --green-soft:#DCE8DD;
     --border:rgba(43,40,35,0.13);
     --shadow:0 1px 2px rgba(43,40,35,0.06);
+    --hover-bg:rgba(43,40,35,0.06);
+    --settings-bg:#FBF8F2;
   }
+  
+  [data-theme="dark"] {
+    --cream:#1a1a1a;
+    --cream-2:#242424;
+    --ink:#E8E4D9;
+    --ink-soft:#9A9587;
+    --sidebar:#0d0d0d;
+    --sidebar-text:#E8E4D9;
+    --sidebar-text-soft:#6a665a;
+    --border:rgba(255,255,255,0.08);
+    --shadow:0 1px 2px rgba(0,0,0,0.3);
+    --hover-bg:rgba(255,255,255,0.06);
+    --settings-bg:#1a1a1a;
+    --clay-soft:#3a2a22;
+    --green-soft:#1a2a1f;
+  }
+  
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;height:100%;}
   body{
@@ -35,7 +54,6 @@
   }
   ::selection{background:var(--clay-soft);}
 
-  /* ---------- Sidebar ---------- */
   .sidebar{
     width:272px;
     min-width:272px;
@@ -88,24 +106,6 @@
     letter-spacing:0.07em;
     padding:0 8px 8px;
   }
-  .subjects{
-    list-style:none;margin:0 0 22px;padding:0;
-    display:flex;flex-direction:column;gap:1px;
-  }
-  .subject-btn{
-    display:flex;align-items:center;gap:10px;
-    width:100%;
-    background:none;border:none;
-    color:var(--sidebar-text);
-    font-family:inherit;font-size:13.5px;
-    padding:9px 8px;border-radius:8px;
-    cursor:pointer;text-align:left;
-    transition:background 0.15s ease;
-  }
-  .subject-btn:hover{background:rgba(255,255,255,0.06);}
-  .subject-btn.active{background:rgba(201,100,66,0.16);color:#F0C9B8;}
-  .subject-dot{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:0.55;flex-shrink:0;}
-
   .class-select{
     margin:0 0 20px;
     background:rgba(255,255,255,0.05);
@@ -116,17 +116,50 @@
     width:100%;
     cursor:pointer;
   }
+  .class-select option{
+    background:var(--sidebar);
+    color:var(--sidebar-text);
+  }
 
   .history-scroll{
-    flex:1;overflow-y:auto;
-    display:flex;flex-direction:column;gap:1px;
-    margin:0 -4px;padding:0 4px;
+    flex:1;
+    overflow-y:auto;
+    overflow-x:hidden;
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+    margin:0 -4px;
+    padding:0 4px;
   }
+  .history-scroll::-webkit-scrollbar {
+    width: 4px;
+  }
+  .history-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .history-scroll::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 4px;
+  }
+  .history-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.3);
+  }
+  .history-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.2) transparent;
+  }
+  
   .history-item{
-    padding:8px 8px;border-radius:8px;
-    font-size:13px;color:var(--sidebar-text-soft);
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-    cursor:pointer;transition:background 0.15s ease, color 0.15s ease;
+    padding:8px 8px;
+    border-radius:8px;
+    font-size:13px;
+    color:var(--sidebar-text-soft);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    cursor:pointer;
+    transition:background 0.15s ease, color 0.15s ease;
+    flex-shrink:0;
   }
   .history-item:hover{background:rgba(255,255,255,0.06);color:var(--sidebar-text);}
 
@@ -155,7 +188,8 @@
   }
   .settings-overlay.open{display:flex;}
   .settings-panel{
-    background:var(--cream-2);
+    background:var(--settings-bg);
+    color:var(--ink);
     border-radius:16px;
     width:360px;max-width:90vw;
     box-shadow:0 20px 50px rgba(0,0,0,0.25);
@@ -172,6 +206,46 @@
   }
   .settings-body{padding:18px;}
   .settings-desc{font-size:13px;color:var(--ink-soft);margin:0 0 16px;line-height:1.6;}
+  
+  .theme-toggle-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 0;
+    border-bottom:0.5px solid var(--border);
+  }
+  .theme-toggle-row label{
+    font-size:13.5px;
+    cursor:pointer;
+  }
+  .theme-toggle{
+    position:relative;
+    width:48px;
+    height:26px;
+    background:var(--border);
+    border-radius:13px;
+    cursor:pointer;
+    transition:background 0.3s ease;
+    flex-shrink:0;
+  }
+  .theme-toggle.active{
+    background:var(--clay);
+  }
+  .theme-toggle .toggle-knob{
+    position:absolute;
+    top:2px;
+    left:2px;
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    background:white;
+    transition:transform 0.3s ease;
+    box-shadow:0 1px 3px rgba(0,0,0,0.2);
+  }
+  .theme-toggle.active .toggle-knob{
+    transform:translateX(22px);
+  }
+  
   .settings-stat{
     display:flex;justify-content:space-between;align-items:center;
     font-size:13.5px;padding:9px 0;border-bottom:0.5px solid var(--border);
@@ -185,7 +259,6 @@
   }
   .danger-btn:hover{background:#8f3323;}
 
-  /* ---------- Main ---------- */
   .main{
     flex:1;display:flex;flex-direction:column;
     height:100vh;position:relative;
@@ -196,13 +269,13 @@
     padding:16px 28px;
     border-bottom:0.5px solid var(--border);
     flex-shrink:0;
+    background:var(--cream);
   }
   .topbar-title{
     font-size:14px;color:var(--ink-soft);
   }
   .topbar-title b{color:var(--ink);font-weight:600;}
 
-  /* ---------- Landing state ---------- */
   .landing{
     flex:1;display:flex;flex-direction:column;
     align-items:center;justify-content:center;
@@ -244,7 +317,7 @@
     cursor:pointer;padding:3px 6px;border-radius:6px;
     transition:background 0.15s ease, color 0.15s ease;
   }
-  .msg-footer .copy-btn:hover{background:rgba(43,40,35,0.06);color:var(--ink-soft);}
+  .msg-footer .copy-btn:hover{background:var(--hover-bg);color:var(--ink-soft);}
   .chip{
     display:flex;align-items:center;gap:7px;
     background:var(--cream-2);
@@ -258,7 +331,6 @@
   }
   .chip .emoji{font-size:15px;}
 
-  /* ---------- Composer ---------- */
   .composer-wrap{
     width:100%;max-width:700px;
     padding:0 24px 22px;
@@ -308,7 +380,14 @@
     cursor:pointer;flex-shrink:0;
     transition:background 0.15s ease;
   }
-  .composer-icon-btn:hover{background:rgba(43,40,35,0.06);}
+  .composer-icon-btn:hover{background:var(--hover-bg);}
+  
+  .send-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
   .send-btn{
     width:36px;height:36px;border-radius:50%;
     border:none;background:var(--green);color:#fff;
@@ -318,13 +397,25 @@
   }
   .send-btn:hover{background:#254a31;}
   .send-btn:active{transform:scale(0.94);}
+  .send-btn:disabled{opacity:0.4;cursor:not-allowed;}
+  
+  .stop-btn{
+    width:36px;height:36px;border-radius:50%;
+    border:none;background:#B3432F;color:#fff;
+    display:none;
+    align-items:center;justify-content:center;
+    cursor:pointer;flex-shrink:0;
+    transition:background 0.15s ease;
+  }
+  .stop-btn:hover{background:#8f3323;}
+  .stop-btn.show{display:flex;}
+  
   .composer-foot{
     display:flex;justify-content:space-between;
     font-size:11px;color:#A39C8C;
     padding:8px 4px 0;
   }
 
-  /* ---------- Chat ---------- */
   .chat-view{display:none;flex:1;flex-direction:column;min-height:0;}
   .chat-view.active{display:flex;}
   .messages{
@@ -332,7 +423,26 @@
     padding:28px 28px 10px;
     display:flex;flex-direction:column;gap:22px;
     max-width:760px;width:100%;margin:0 auto;
+    background:var(--cream);
   }
+  .messages::-webkit-scrollbar {
+    width: 4px;
+  }
+  .messages::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .messages::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+  }
+  .messages::-webkit-scrollbar-thumb:hover {
+    background: var(--ink-soft);
+  }
+  .messages {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  
   .msg-user{align-self:flex-end;max-width:78%;}
   .msg-user .bubble{
     background:var(--cream-2);
@@ -361,8 +471,9 @@
     font-family:'Noto Serif Bengali',serif;
     font-weight:600;font-size:18px;
     color:var(--ink);
-    margin:0 0 8px;
+    margin:16px 0 8px;
   }
+  .ai-content h3:first-child{margin-top:0;}
   .ai-content p{margin:0 0 12px;}
   .ai-content ul{margin:0 0 12px;padding-left:20px;}
   .ai-content li{margin-bottom:4px;}
@@ -397,6 +508,7 @@
     font-family:'Inter',monospace;
     font-size:17px;font-weight:500;
     text-align:center;letter-spacing:0.02em;
+    overflow-x:auto;
   }
   .var-list{
     list-style:none;margin:0 0 16px;padding:0;
@@ -423,22 +535,7 @@
     font-weight:600;font-size:14.5px;
     color:var(--ink);margin-bottom:6px;
   }
-  .diagram-box{
-    margin:16px 0;padding:18px;
-    background:var(--cream-2);
-    border:0.5px solid var(--border);
-    border-radius:10px;
-    display:inline-flex;flex-direction:column;align-items:flex-start;gap:10px;
-    max-width:100%;
-  }
-  .diagram-download{
-    display:flex;align-items:center;gap:6px;
-    background:none;border:0.5px solid var(--border);
-    color:var(--ink-soft);font-family:inherit;font-size:12px;
-    padding:6px 12px;border-radius:8px;cursor:pointer;
-    transition:background 0.15s ease;
-  }
-  .diagram-download:hover{background:rgba(43,40,35,0.05);}
+  
   .cursor{
     display:inline-block;width:2px;height:15px;
     background:var(--ink);margin-left:1px;
@@ -454,12 +551,26 @@
     50%{opacity:1;}
   }
 
+  .stop-indicator {
+    display:inline-block;
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:var(--clay);
+    margin-right:8px;
+    animation:pulse-dot 0.8s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%,100%{opacity:0.3;transform:scale(0.9);}
+    50%{opacity:1;transform:scale(1.1);}
+  }
+
   @media (prefers-reduced-motion: reduce){
     .cursor{animation:none;}
     .loading-text{animation:none;}
+    .stop-indicator{animation:none;}
   }
 
-  /* ---------- Mobile ---------- */
   @media (max-width: 780px){
     .sidebar{position:fixed;left:0;top:0;z-index:20;transform:translateX(-100%);transition:transform 0.2s ease;}
     .sidebar.open{transform:translateX(0);}
@@ -508,7 +619,6 @@
   </div>
 </aside>
 
-<!-- Settings panel -->
 <div class="settings-overlay" id="settingsOverlay">
   <div class="settings-panel">
     <div class="settings-header">
@@ -517,6 +627,14 @@
     </div>
     <div class="settings-body">
       <p class="settings-desc">তোমার সব চ্যাট এই ব্রাউজারেই সংরক্ষিত থাকে — কোনো সার্ভারে পাঠানো হয় না।</p>
+      
+      <div class="theme-toggle-row">
+        <label for="themeToggle">থিম পরিবর্তন</label>
+        <div class="theme-toggle" id="themeToggle" role="button" tabindex="0">
+          <div class="toggle-knob"></div>
+        </div>
+      </div>
+      
       <div class="settings-stat">
         <span>সংরক্ষিত চ্যাট সংখ্যা</span>
         <b id="statChatCount">0</b>
@@ -538,7 +656,6 @@
     <div class="topbar-title"><b>সহপাঠী AI</b> &nbsp;·&nbsp; <span id="topbarClass">দশম শ্রেণি</span></div>
   </div>
 
-  <!-- Landing -->
   <section class="landing" id="landing">
     <div class="landing-mark">স</div>
     <h1>আজ কী শিখতে চাও?</h1>
@@ -550,7 +667,6 @@
     </div>
   </section>
 
-  <!-- Chat -->
   <section class="chat-view" id="chatView">
     <div class="messages" id="messages"></div>
   </section>
@@ -568,9 +684,14 @@
       </button>
       <input type="file" id="imageInput" accept="image/*" style="display:none;">
       <textarea id="input" rows="1" placeholder="তোমার প্রশ্ন লেখো... (যেমন: নবম শ্রেণির রসায়নের ৩য় অধ্যায় বুঝিয়ে দাও)"></textarea>
-      <button class="send-btn" id="sendBtn" title="পাঠাও">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-      </button>
+      <div class="send-wrapper">
+        <button class="stop-btn" id="stopBtn" title="থামাও">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+        </button>
+        <button class="send-btn" id="sendBtn" title="পাঠাও">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+        </button>
+      </div>
     </div>
     <div class="composer-foot">
       <span>সহপাঠী AI ভুল করতে পারে। গুরুত্বপূর্ণ তথ্য যাচাই করো।</span>
@@ -585,16 +706,40 @@ const chatView = document.getElementById('chatView');
 const messages = document.getElementById('messages');
 const input = document.getElementById('input');
 const sendBtn = document.getElementById('sendBtn');
+const stopBtn = document.getElementById('stopBtn');
 const classSelect = document.getElementById('classSelect');
 const topbarClass = document.getElementById('topbarClass');
 
-// ---------- Image attachment ----------
+let currentAbortController = null;
+
+const themeToggle = document.getElementById('themeToggle');
+let isDark = false;
+
+const savedTheme = localStorage.getItem('sohopathi_theme');
+if (savedTheme === 'dark') {
+  document.documentElement.setAttribute('data-theme', 'dark');
+  themeToggle.classList.add('active');
+  isDark = true;
+}
+
+themeToggle.addEventListener('click', () => {
+  isDark = !isDark;
+  themeToggle.classList.toggle('active');
+  if (isDark) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    localStorage.setItem('sohopathi_theme', 'dark');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+    localStorage.setItem('sohopathi_theme', 'light');
+  }
+});
+
 const attachBtn = document.getElementById('attachBtn');
 const imageInput = document.getElementById('imageInput');
 const imagePreviewRow = document.getElementById('imagePreviewRow');
 const imagePreviewThumb = document.getElementById('imagePreviewThumb');
 const removeImageBtn = document.getElementById('removeImageBtn');
-let attachedImageBase64 = null; // data URL, sent to backend if present
+let attachedImageBase64 = null;
 
 attachBtn.addEventListener('click', ()=> imageInput.click());
 
@@ -603,7 +748,7 @@ imageInput.addEventListener('change', ()=>{
   if(!file) return;
   const reader = new FileReader();
   reader.onload = () => {
-    attachedImageBase64 = reader.result; // data:image/...;base64,....
+    attachedImageBase64 = reader.result;
     imagePreviewThumb.src = attachedImageBase64;
     imagePreviewRow.style.display = 'block';
   };
@@ -620,7 +765,6 @@ classSelect.addEventListener('change', ()=>{
   topbarClass.textContent = classSelect.value;
 });
 
-// ---------- Local chat history (stored only in this browser) ----------
 const CHATS_KEY = 'sohopathi_chats';
 let currentChatId = null;
 
@@ -695,7 +839,6 @@ function loadChat(id){
   messages.scrollTop = messages.scrollHeight;
 }
 
-// ---------- Settings / storage panel ----------
 const settingsOverlay = document.getElementById('settingsOverlay');
 document.getElementById('settingsBtn').addEventListener('click', ()=>{
   const chats = loadChats();
@@ -727,12 +870,7 @@ function showLanding(){
   messages.innerHTML='';
   input.value='';
   currentChatId = null;
-}
-
-function startChat(placeholderText){
-  landing.style.display='none';
-  chatView.classList.add('active');
-  input.focus();
+  stopBtn.classList.remove('show');
 }
 
 function autoGrow(){
@@ -747,6 +885,17 @@ input.addEventListener('keydown', (e)=>{
   }
 });
 sendBtn.addEventListener('click', handleSend);
+
+stopBtn.addEventListener('click', ()=>{
+  if(currentAbortController){
+    currentAbortController.abort();
+    currentAbortController = null;
+    stopBtn.classList.remove('show');
+    sendBtn.disabled = false;
+    removeLoadingMessage();
+    addAiMessageStreaming([{type:'p', text: '⏹️ উত্তর তৈরি করা থামানো হয়েছে।'}]);
+  }
+});
 
 function addUserMessage(text, imageDataUrl){
   const div = document.createElement('div');
@@ -803,8 +952,6 @@ function addMessageFooter(wrapEl, contentEl){
   });
 }
 
-// Streams a sequence of {type, text} blocks into the target element,
-// revealing text character by character with a blinking cursor.
 function streamContent(target, blocks, onComplete){
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let blockIndex = 0;
@@ -835,27 +982,6 @@ function streamContent(target, blocks, onComplete){
       target.appendChild(el);
       return body;
     }
-    else if(block.type==='diagram'){
-      el=document.createElement('div'); el.className='diagram-box';
-      const svgWrap = document.createElement('div');
-      svgWrap.innerHTML = block.svg;
-      el.appendChild(svgWrap);
-      const dlBtn = document.createElement('button');
-      dlBtn.className='diagram-download';
-      dlBtn.type='button';
-      dlBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> ডাউনলোড`;
-      dlBtn.addEventListener('click', ()=>{
-        const blob = new Blob([block.svg], {type:'image/svg+xml'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = 'diagram.svg';
-        a.click();
-        URL.revokeObjectURL(url);
-      });
-      el.appendChild(dlBtn);
-      target.appendChild(el);
-      return null; // rendered instantly, not streamed char-by-char
-    }
     else { el=document.createElement('p'); }
     target.appendChild(el);
     return el;
@@ -872,8 +998,6 @@ function streamContent(target, blocks, onComplete){
           } else { li.innerHTML=it; }
           ul.appendChild(li);
         });
-      } else if(b.type==='diagram'){
-        renderBlockShell(b);
       } else {
         const el=renderBlockShell(b);
         el.innerHTML=b.text;
@@ -894,14 +1018,6 @@ function streamContent(target, blocks, onComplete){
       return;
     }
     const block = blocks[blockIndex];
-
-    if(block.type==='diagram'){
-      renderBlockShell(block);
-      blockIndex++;
-      messages.scrollTop = messages.scrollHeight;
-      setTimeout(()=>requestAnimationFrame(tick), 120);
-      return;
-    }
 
     if(block.type==='ul' || block.type==='varlist'){
       if(!currentEl){ currentEl = renderBlockShell(block); liIdx=0; charIndex=0; }
@@ -943,76 +1059,42 @@ function streamContent(target, blocks, onComplete){
   requestAnimationFrame(tick);
 }
 
-// Demo response generator — swap this for a real API call to your backend.
-// (Browser can't call Ollama Cloud directly with the API key exposed —
-// this needs to go through a small server-side proxy, e.g. a Cloudflare Worker.)
-const forceDiagramSVG = `
-<svg width="420" height="150" viewBox="0 0 420 150" xmlns="http://www.w3.org/2000/svg">
-  <rect x="150" y="55" width="70" height="45" rx="5" fill="#F5F0E6" stroke="#2B2823" stroke-width="1.5"/>
-  <text x="185" y="82" text-anchor="middle" font-family="Noto Sans Bengali, sans-serif" font-size="12" fill="#2B2823">বস্তু (m)</text>
-  <line x1="220" y1="77" x2="290" y2="77" stroke="#C96442" stroke-width="2.5"/>
-  <polygon points="290,71 302,77 290,83" fill="#C96442"/>
-  <text x="296" y="60" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#C96442">F</text>
-  <line x1="185" y1="100" x2="185" y2="130" stroke="#2F5D3E" stroke-width="2" stroke-dasharray="3,3"/>
-  <polygon points="180,124 185,134 190,124" fill="#2F5D3E"/>
-  <text x="185" y="146" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#2F5D3E">a</text>
-</svg>`;
-
-function getDemoResponse(question, studentClass){
-  return [
-    {type:'h3', text:'নিউটনের দ্বিতীয় সূত্র'},
-    {type:'p', text:'কোনো বস্তুর ভরবেগের পরিবর্তনের হার প্রযুক্ত বলের সমানুপাতিক এবং পরিবর্তনটি বলের দিকেই ঘটে।'},
-    {type:'p', text:'<b>সহজভাবে বললে —</b> কোনো বস্তুর ওপর বেশি বল প্রয়োগ করলে তার ত্বরণ বেশি হয়। আবার একই বল ভারী বস্তুর তুলনায় হালকা বস্তুকে বেশি ত্বরণ দেয়।'},
-    {type:'diagram', svg: forceDiagramSVG},
-    {type:'h3', text:'গাণিতিক রূপ'},
-    {type:'formula', text:'F = ma'},
-    {type:'varlist', items:[
-      {sym:'F', desc:'= প্রযুক্ত বল, একক নিউটন (N)'},
-      {sym:'m', desc:'= বস্তুর ভর, একক কিলোগ্রাম (kg)'},
-      {sym:'a', desc:'= ত্বরণ, একক মিটার/সেকেন্ড² (m/s²)'}
-    ]},
-    {type:'p', text:'অতএব, ১ kg ভরের বস্তুর মধ্যে ১ m/s² ত্বরণ সৃষ্টি করতে যে বল লাগে, তাকে ১ নিউটন বলে।'},
-    {type:'example', text:'একটি ফুটবলের ভর (০.৫ kg)। এটিকে লাথি দেওয়ার ফলে (৮ m/s²) ত্বরণ সৃষ্টি হলো। প্রযুক্ত বল কত?<br><br><b>সমাধান:</b> F = ma = ০.৫ × ৮ = <b>৪ নিউটন</b>'},
-    {type:'summary', text:'<b>সংক্ষিপ্ত উত্তর:</b> F = ma — বল সমান ভর গুণ ত্বরণ।'},
-    {type:'practice', text:'একটি সাইকেলের ভর ১২ kg। এটিকে ২ m/s² ত্বরণ দিতে কত বল প্রয়োজন হবে?'}
-  ];
+function removeEmojis(text) {
+  return text.replace(/[\u{1F300}-\u{1F9FF}]/gu, '')
+             .replace(/[\u{2600}-\u{26FF}]/gu, '')
+             .replace(/[\u{2700}-\u{27BF}]/gu, '')
+             .replace(/[📌⚗️🔑📍🌟📝✅❌⭐🔹🔸]/g, '')
+             .trim();
 }
 
-// Convert the AI's markdown-ish text response into the block format our streamer understands.
-// Strips anything dangerous out of AI-generated SVG before it's inserted into the page.
-function sanitizeSvg(svg){
-  return svg
-    .replace(/<script[\s\S]*?<\/script>/gi, '')
-    .replace(/\son\w+="[^"]*"/gi, '')
-    .replace(/\son\w+='[^']*'/gi, '')
-    .replace(/javascript:/gi, '');
-}
-
-// Rejects incomplete/malformed SVG so we never render an empty diagram box.
-function isValidSvg(svg){
-  const trimmed = svg.trim();
-  if(!trimmed.startsWith('<svg')) return false;
-  if(!trimmed.includes('</svg>')) return false;
-  if(trimmed.length < 40) return false;
-  return true;
+function formatMath(text) {
+  text = text.replace(/H2O/g, 'H₂O')
+             .replace(/CO2/g, 'CO₂')
+             .replace(/O2/g, 'O₂')
+             .replace(/C6H12O6/g, 'C₆H₁₂O₆')
+             .replace(/([A-Za-z])(\d+)/g, (match, letter, num) => {
+               const subscripts = {'0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉'};
+               const sub = num.split('').map(d => subscripts[d] || d).join('');
+               return letter + sub;
+             });
+  
+  text = text.replace(/\\xrightarrow\[[^\]]*\]\{[^}]*\}/g, '→')
+             .replace(/\\xrightarrow\{[^}]*\}/g, '→')
+             .replace(/\\rightarrow/g, '→')
+             .replace(/\\\[/g, '')
+             .replace(/\\\]/g, '')
+             .replace(/\\text\{([^}]*)\}/g, '$1');
+  
+  return text;
 }
 
 function markdownToBlocks(markdown){
   const blocks = [];
 
-  // Pull out ```svg ... ``` fenced diagrams first, replacing each with a marker
-  // so we can slot a real diagram block into the right position below.
-  const diagrams = [];
-  const withoutSvg = markdown.replace(/```svg\s*([\s\S]*?)```/gi, (match, svgCode) => {
-    const clean = sanitizeSvg(svgCode.trim());
-    if(isValidSvg(clean)){
-      diagrams.push(clean);
-      return `\n@@DIAGRAM_${diagrams.length - 1}@@\n`;
-    }
-    return '\n'; // broken diagram — drop it silently, no empty box
-  });
+  let cleanMarkdown = removeEmojis(markdown);
+  cleanMarkdown = formatMath(cleanMarkdown);
 
-  const lines = withoutSvg.split('\n');
+  const lines = cleanMarkdown.split('\n');
   let listBuffer = [];
 
   function flushList(){
@@ -1031,7 +1113,7 @@ function markdownToBlocks(markdown){
   let paragraphBuffer = [];
   function flushParagraph(){
     if(paragraphBuffer.length){
-      const text = inline(paragraphBuffer.join(' ').trim());
+      let text = inline(paragraphBuffer.join(' ').trim());
       if(text) blocks.push({type:'p', text});
       paragraphBuffer = [];
     }
@@ -1040,15 +1122,10 @@ function markdownToBlocks(markdown){
   for(const rawLine of lines){
     const line = rawLine.trim();
     if(line === ''){ flushParagraph(); flushList(); continue; }
-    const diagramMatch = line.match(/^@@DIAGRAM_(\d+)@@$/);
-    if(diagramMatch){
+    if(/^#+/.test(line)){
       flushParagraph(); flushList();
-      blocks.push({type:'diagram', svg: diagrams[parseInt(diagramMatch[1])]});
-      continue;
-    }
-    if(line.startsWith('###') || line.startsWith('##') || line.startsWith('#')){
-      flushParagraph(); flushList();
-      blocks.push({type:'h3', text: inline(line.replace(/^#+\s*/, ''))});
+      const headingText = line.replace(/^#+\s*/, '').trim();
+      blocks.push({type:'h3', text: inline(headingText)});
       continue;
     }
     if(/^[-*•]\s+/.test(line) || /^\d+[\.\)]\s+/.test(line)){
@@ -1066,11 +1143,26 @@ function markdownToBlocks(markdown){
 
 const WORKER_URL = 'https://sohopathi-worker.diablostore.workers.dev';
 
-async function askBackend(question, studentClass, imageDataUrl){
+async function askBackend(question, studentClass, imageDataUrl, signal){
+  let history = [];
+  if(currentChatId){
+    const chats = loadChats();
+    const chat = chats.find(c => c.id === currentChatId);
+    if(chat){
+      history = chat.messages.slice(-10);
+    }
+  }
+  
   const res = await fetch(WORKER_URL, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ question, studentClass, image: imageDataUrl || null })
+    body: JSON.stringify({ 
+      question, 
+      studentClass, 
+      image: imageDataUrl || null,
+      history: history
+    }),
+    signal: signal
   });
   if(!res.ok){
     throw new Error('Server error: ' + res.status);
@@ -1086,7 +1178,9 @@ function addLoadingMessage(){
   wrap.innerHTML = `
     <div class="msg-ai-inner">
       <div class="ai-avatar">স</div>
-      <div class="ai-content loading-text" style="color:var(--ink-soft);">ভাবছি...</div>
+      <div class="ai-content loading-text" style="color:var(--ink-soft);display:flex;align-items:center;gap:8px;">
+        <span class="stop-indicator"></span> ভাবছি...
+      </div>
     </div>`;
   messages.appendChild(wrap);
   messages.scrollTop = messages.scrollHeight;
@@ -1107,6 +1201,12 @@ async function handleSend(){
   const text = input.value.trim();
   const imageToSend = attachedImageBase64;
   if(!text && !imageToSend) return;
+  
+  if(currentAbortController) {
+    currentAbortController.abort();
+    currentAbortController = null;
+  }
+  
   const effectiveText = text || 'এই ছবিতে কী আছে? ব্যাখ্যা করো।';
   const selectedClass = classSelect.value;
   ensureChatVisible();
@@ -1118,19 +1218,30 @@ async function handleSend(){
   attachedImageBase64 = null;
   imageInput.value = '';
   imagePreviewRow.style.display = 'none';
+  
   sendBtn.disabled = true;
+  stopBtn.classList.add('show');
+  
   addLoadingMessage();
-
+  
+  currentAbortController = new AbortController();
+  
   try{
-    const answerText = await askBackend(effectiveText, selectedClass, imageToSend);
+    const answerText = await askBackend(effectiveText, selectedClass, imageToSend, currentAbortController.signal);
     removeLoadingMessage();
-    addAiMessageStreaming(markdownToBlocks(answerText));
+    const blocks = markdownToBlocks(answerText);
+    addAiMessageStreaming(blocks);
     appendToChat('ai', answerText);
   } catch(err){
     removeLoadingMessage();
+    if(err.name === 'AbortError') {
+      return;
+    }
     addAiMessageStreaming([{type:'p', text: 'দুঃখিত, একটি সমস্যা হয়েছে। আবার চেষ্টা করো। (' + err.message + ')'}]);
   } finally {
     sendBtn.disabled = false;
+    stopBtn.classList.remove('show');
+    currentAbortController = null;
   }
 }
 </script>
