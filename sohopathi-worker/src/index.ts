@@ -1,8 +1,5 @@
 import chunks from './chunks.json';
-<<<<<<< HEAD
-=======
 // Import the prompt template as a string
->>>>>>> 44e87cf6f1c94828544f70b405405d5aefeb169c
 import promptTemplate from './prompt.txt?raw';
 
 interface Env {
