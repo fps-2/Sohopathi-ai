@@ -5,8 +5,8 @@ import time
 import shutil
 
 def get_embedding(text, api_key):
-    url = "https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
-    headers = {
+    # Use this URL instead:
+url = "https://router.huggingface.co/hf-inference/models/sentence-transformers/paraphrase-multilingual-mpnet-base-v2/pipeline/feature-extraction"
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json"
     }

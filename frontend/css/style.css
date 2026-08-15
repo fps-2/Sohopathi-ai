@@ -3,7 +3,7 @@
   --cream-2:#FBF8F2;
   --ink:#2B2823;
   --ink-soft:#756E60;
-  --sidebar:#1a1a2e;
+  --sidebar:#1C1B17;
   --sidebar-line:rgba(255,255,255,0.08);
   --sidebar-text:#E8E4D9;
   --sidebar-text-soft:#9A9587;
@@ -19,13 +19,12 @@
   --sidebar-width:280px;
 }
 
-/* Dark Theme - Dark Blue */
 [data-theme="dark"] {
   --cream:#0f0f1a;
   --cream-2:#16162e;
   --ink:#E8E4D9;
   --ink-soft:#9A9587;
-  --sidebar:#0a0a1a;
+  --sidebar:#0d0d0d;
   --sidebar-text:#E8E4D9;
   --sidebar-text-soft:#6a665a;
   --border:rgba(100,100,200,0.15);
@@ -52,7 +51,7 @@ body{
 }
 ::selection{background:var(--clay-soft);}
 
-/* ---------- Sidebar Overlay (Mobile only) ---------- */
+/* Sidebar Overlay (Mobile only) */
 .sidebar-overlay{
   display:none;
   position:fixed;
@@ -67,7 +66,7 @@ body{
   opacity:1;
 }
 
-/* ---------- Sidebar ---------- */
+/* Sidebar */
 .sidebar{
   display:flex;
   flex-direction:column;
@@ -265,7 +264,7 @@ body{
   padding:8px;opacity:0.7;
 }
 
-/* ---------- Settings Panel ---------- */
+/* Settings Panel */
 .settings-overlay{
   display:none;
   position:fixed;
@@ -359,7 +358,7 @@ body{
 }
 .danger-btn:hover{background:#8f3323;}
 
-/* ---------- Main ---------- */
+/* Main */
 .main{
   flex:1;
   display:flex;
@@ -721,7 +720,7 @@ body{
   .stop-indicator{animation:none;}
 }
 
-/* ---------- Custom Modal ---------- */
+/* Custom Modal */
 .custom-modal-overlay {
   position: fixed;
   inset: 0;
@@ -818,7 +817,7 @@ body{
   background: rgba(255, 255, 255, 0.15);
 }
 
-/* ---------- Small Mobile ---------- */
+/* Small Mobile */
 @media (max-width: 480px){
   .composer{padding:6px 6px 6px 10px;}
   .composer textarea{font-size:13px;}
@@ -830,63 +829,4 @@ body{
   .messages{padding:12px 10px 8px;gap:14px;}
   .composer-wrap{padding:0 8px 12px;padding-bottom:calc(12px + env(safe-area-inset-bottom, 0px));}
   .formula-box{font-size:13px;padding:12px 14px;}
-}
-
-/* ---------- SSC Exam Answer Format ---------- */
-.ssc-answer {
-  font-family: 'Noto Sans Bengali', sans-serif;
-  line-height: 1.9;
-  color: var(--ink);
-}
-
-.ssc-answer .question-label {
-  font-weight: 700;
-  color: var(--clay);
-  font-size: 15px;
-  display: block;
-  margin-top: 16px;
-  margin-bottom: 4px;
-}
-
-.ssc-answer .question-label .marks {
-  font-weight: 400;
-  color: var(--ink-soft);
-  font-size: 12px;
-  background: var(--cream-2);
-  padding: 1px 10px;
-  border-radius: 4px;
-  margin-left: 8px;
-}
-
-.ssc-answer .answer-content {
-  padding-left: 8px;
-  border-left: 2px solid var(--border);
-  margin-bottom: 8px;
-}
-
-.ssc-answer .answer-content p {
-  margin: 4px 0;
-}
-
-.ssc-answer .highlight {
-  color: var(--green);
-  font-weight: 600;
-}
-
-.ssc-answer .source-ref {
-  margin-top: 16px;
-  padding-top: 12px;
-  border-top: 1px dashed var(--border);
-  font-size: 13px;
-  color: var(--ink-soft);
-}
-
-/* Dark theme adjustments */
-[data-theme="dark"] .ssc-answer .question-label .marks {
-  background: var(--cream-2);
-  color: var(--ink-soft);
-}
-
-[data-theme="dark"] .ssc-answer .answer-content {
-  border-left-color: var(--border);
 }

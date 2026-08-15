@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@500;600;700&family=Noto+Sans+Bengali:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<script src="js/config.js"></script>
 </head>
 <body>
 
@@ -30,12 +31,12 @@
   </button>
 
   <select class="class-select" id="classSelect">
-    <option>ষষ্ঠ শ্রেণি</option>
-    <option>সপ্তম শ্রেণি</option>
-    <option>অষ্টম শ্রেণি</option>
-    <option>নবম শ্রেণি</option>
-    <option selected>দশম শ্রেণি</option>
-  </select>
+    <option value="ষষ্ঠ শ্রেণি">ষষ্ঠ শ্রেণি</option>
+    <option value="সপ্তম শ্রেণি">সপ্তম শ্রেণি</option>
+    <option value="অষ্টম শ্রেণি">অষ্টম শ্রেণি</option>
+    <option value="নবম শ্রেণি">নবম শ্রেণি</option>
+    <option value="দশম শ্রেণি" selected>দশম শ্রেণি</option>
+ </select>
 
   <div class="side-label">সাম্প্রতিক</div>
   <div class="history-scroll" id="historyList">
@@ -44,9 +45,9 @@
 
   <div class="sidebar-footer">
     <button class="settings-btn" id="settingsBtn" type="button">
-     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-    <span>সেটিংস</span>
-   </button>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83-2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span>সেটিংস</span>
+    </button>
   </div>
 </aside>
 
@@ -86,7 +87,7 @@
     <button class="menu-btn" id="menuBtn" aria-label="মেনু খুলুন">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
     </button>
-    <div class="topbar-title"><b>সহপাঠী AI</b> &nbsp;·&nbsp; <span id="topbarClass">দশম শ্রেণি</span></div>
+    <div class="topbar-title"><b id="topbarBrand">সহপাঠী AI</b> &nbsp;·&nbsp; <span id="topbarClass">দশম শ্রেণি</span></div>
   </div>
 
   <section class="landing" id="landing">

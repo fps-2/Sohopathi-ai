@@ -37,11 +37,23 @@ async function getQueryEmbedding(text: string, hfApiKey: string) {
   return res.json() as Promise<number[]>;
 }
 
-function findTopChunks(queryEmbedding: number[], topN = 3) {
-  const scored = (chunks as any[]).map(chunk => ({
-    chunk,
-    score: cosineSimilarity(queryEmbedding, chunk.embedding)
-  }));
+function findTopChunks(queryEmbedding: number[], topN = 2) {
+  // Check if chunks exist and have embeddings
+  if (!chunks || !Array.isArray(chunks) || chunks.length === 0) {
+    return [];
+  }
+  
+  const scored = (chunks as any[]).map(chunk => {
+    // If chunk doesn't have embedding, skip it
+    if (!chunk.embedding || !Array.isArray(chunk.embedding)) {
+      return { chunk, score: -1 };
+    }
+    return {
+      chunk,
+      score: cosineSimilarity(queryEmbedding, chunk.embedding)
+    };
+  });
+  
   scored.sort((a, b) => b.score - a.score);
   return scored.slice(0, topN);
 }

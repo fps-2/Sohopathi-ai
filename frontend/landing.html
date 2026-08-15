@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="google" content="notranslate">
+    <title>সহপাঠী AI - ষষ্ঠ থেকে দশম শ্রেণির শিক্ষা সহায়ক</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@500;600;700&family=Noto+Sans+Bengali:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="js/config.js"></script>
+    <style>
+        :root {
+            --cream: #F5F0E6;
+            --cream-2: #FBF8F2;
+            --ink: #2B2823;
+            --ink-soft: #756E60;
+            --clay: #C96442;
+            --clay-soft: #F0DDD2;
+            --green: #2F5D3E;
+            --green-soft: #DCE8DD;
+            --shadow: 0 4px 20px rgba(43,40,35,0.08);
+            --shadow-hover: 0 8px 40px rgba(43,40,35,0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans Bengali', 'Inter', sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ---------- Navigation ---------- */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 32px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(245, 240, 230, 0.85);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 0.5px solid rgba(43, 40, 35, 0.06);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-mark {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(155deg, var(--clay), #a84f31);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Noto Serif Bengali', serif;
+            font-weight: 700;
+            font-size: 18px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .logo-text {
+            font-family: 'Noto Serif Bengali', serif;
+            font-weight: 600;
+            font-size: 18px;
+            color: var(--ink);
+        }
+
+        .logo-sub {
+            font-size: 11px;
+            color: var(--ink-soft);
+            font-weight: 400;
+            display: block;
+            margin-top: -2px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--ink-soft);
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.15s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--clay);
+        }
+
+        .btn-primary {
+            background: var(--clay);
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s ease, transform 0.1s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            background: #a84f31;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--cream-2);
+            color: var(--ink);
+            border: 0.5px solid rgba(43, 40, 35, 0.13);
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s ease, transform 0.1s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            background: var(--cream);
+            transform: translateY(-1px);
+        }
+
+        /* ---------- Hero Section ---------- */
+        .hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 32px 80px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-family: 'Noto Serif Bengali', serif;
+            font-size: 44px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+
+        .hero-content h1 .highlight {
+            color: var(--clay);
+        }
+
+        .hero-content .tagline {
+            font-size: 16px;
+            color: var(--ink-soft);
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .hero-content p {
+            font-size: 18px;
+            color: var(--ink-soft);
+            line-height: 1.7;
+            margin-bottom: 32px;
+            max-width: 480px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .hero-stat {
+            display: flex;
+            gap: 40px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .hero-stat-item .number {
+            font-family: 'Inter', sans-serif;
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--clay);
+            display: block;
+        }
+
+        .hero-stat-item .label {
+            font-size: 14px;
+            color: var(--ink-soft);
+        }
+
+        .hero-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-card {
+            background: var(--cream-2);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 420px;
+            border: 0.5px solid rgba(43, 40, 35, 0.06);
+        }
+
+        .hero-card .chat-preview {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .hero-card .message {
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.6;
+            max-width: 85%;
+        }
+
+        .hero-card .message.user {
+            background: var(--clay);
+            color: #fff;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .hero-card .message.ai {
+            background: var(--cream);
+            color: var(--ink);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            border: 0.5px solid rgba(43, 40, 35, 0.06);
+        }
+
+        .hero-card .message.ai .source {
+            font-size: 11px;
+            color: var(--ink-soft);
+            margin-top: 6px;
+            display: block;
+        }
+
+        .hero-card .composer-preview {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            background: var(--cream);
+            border-radius: 12px;
+            padding: 8px 12px;
+            border: 0.5px solid rgba(43, 40, 35, 0.06);
+        }
+
+        .hero-card .composer-preview input {
+            flex: 1;
+            border: none;
+            background: none;
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--ink);
+            outline: none;
+            padding: 6px 0;
+        }
+
+        .hero-card .composer-preview input::placeholder {
+            color: #A39C8C;
+        }
+
+        .hero-card .composer-preview .send-preview {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--green);
+            color: #fff;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        /* ---------- Features ---------- */
+        .features {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 32px 80px;
+            text-align: center;
+        }
+
+        .features h2 {
+            font-family: 'Noto Serif Bengali', serif;
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .features .subtitle {
+            font-size: 16px;
+            color: var(--ink-soft);
+            margin-bottom: 40px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: var(--cream-2);
+            padding: 28px 20px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            border: 0.5px solid rgba(43, 40, 35, 0.04);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .feature-card .icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-family: 'Noto Serif Bengali', serif;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: var(--ink-soft);
+            line-height: 1.6;
+        }
+
+        /* ---------- Subjects ---------- */
+        .subjects-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 32px 80px;
+            text-align: center;
+        }
+
+        .subjects-section h2 {
+            font-family: 'Noto Serif Bengali', serif;
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .subjects-section .subtitle {
+            font-size: 16px;
+            color: var(--ink-soft);
+            margin-bottom: 40px;
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+        }
+
+        .subject-tag {
+            background: var(--cream-2);
+            padding: 16px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 0.5px solid rgba(43, 40, 35, 0.06);
+            transition: background 0.15s ease, transform 0.15s ease;
+            cursor: default;
+        }
+
+        .subject-tag:hover {
+            background: var(--clay-soft);
+            transform: translateY(-2px);
+        }
+
+        .subject-tag .sub-icon {
+            font-size: 20px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .subject-tag .class-badge {
+            font-size: 10px;
+            color: var(--ink-soft);
+            display: block;
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        /* ---------- Class Levels ---------- */
+        .class-levels {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 32px 60px;
+            text-align: center;
+        }
+
+        .class-levels h2 {
+            font-family: 'Noto Serif Bengali', serif;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .class-levels .subtitle {
+            font-size: 16px;
+            color: var(--ink-soft);
+            margin-bottom: 32px;
+        }
+
+        .class-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .class-card {
+            background: var(--cream-2);
+            padding: 20px 16px;
+            border-radius: 14px;
+            text-align: center;
+            border: 0.5px solid rgba(43, 40, 35, 0.06);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .class-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .class-card .class-icon {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .class-card .class-name {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .class-card .class-count {
+            font-size: 12px;
+            color: var(--ink-soft);
+        }
+
+        /* ---------- CTA ---------- */
+        .cta-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 32px 80px;
+            text-align: center;
+        }
+
+        .cta-box {
+            background: var(--clay);
+            color: #fff;
+            padding: 48px 32px;
+            border-radius: 20px;
+            box-shadow: 0 8px 40px rgba(201, 100, 66, 0.25);
+        }
+
+        .cta-box h2 {
+            font-family: 'Noto Serif Bengali', serif;
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .cta-box p {
+            font-size: 16px;
+            opacity: 0.85;
+            margin-bottom: 24px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-box .btn-white {
+            background: #fff;
+            color: var(--clay);
+            border: none;
+            padding: 12px 32px;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-box .btn-white:hover {
+            transform: scale(1.02);
+        }
+
+        /* ---------- Footer ---------- */
+        .footer {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px;
+            border-top: 0.5px solid rgba(43, 40, 35, 0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer p {
+            font-size: 13px;
+            color: var(--ink-soft);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            color: var(--ink-soft);
+            font-size: 13px;
+            transition: color 0.15s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--clay);
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 12px 16px;
+            }
+            .nav-links {
+                gap: 12px;
+            }
+            .nav-links a:not(.btn-primary) {
+                display: none;
+            }
+            .hero {
+                grid-template-columns: 1fr;
+                padding: 40px 16px 60px;
+                gap: 40px;
+            }
+            .hero-content h1 {
+                font-size: 32px;
+            }
+            .hero-stat {
+                gap: 20px;
+            }
+            .hero-stat-item .number {
+                font-size: 24px;
+            }
+            .features h2,
+            .subjects-section h2,
+            .cta-box h2,
+            .class-levels h2 {
+                font-size: 26px;
+            }
+            .features-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .subjects-grid {
+                grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            }
+            .class-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .cta-box {
+                padding: 32px 20px;
+            }
+            .footer {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .class-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .hero-buttons {
+                flex-direction: column;
+            }
+            .hero-buttons .btn-primary,
+            .hero-buttons .btn-secondary {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="#" class="logo">
+            <div class="logo-mark">স</div>
+            <div>
+                <span class="logo-text">সহপাঠী AI</span>
+                <span class="logo-sub">৬ষ্ঠ-১০ম শ্রেণি</span>
+            </div>
+        </a>
+        <div class="nav-links">
+            <a href="#features">বৈশিষ্ট্য</a>
+            <a href="#subjects">বিষয়সমূহ</a>
+            <a href="#classes">শ্রেণি</a>
+            <a href="index.html" class="btn-primary">চ্যাট শুরু করো</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>
+                <span class="highlight">সহপাঠী AI</span><br>
+                তোমার শিক্ষার সহায়ক
+            </h1>
+            <p class="tagline">🔹 ষষ্ঠ থেকে দশম শ্রেণির শিক্ষার্থীদের জন্য</p>
+            <p>
+                সহপাঠী AI হলো একটি বুদ্ধিমান শিক্ষা সহায়ক, যা তোমার পাঠ্যবইয়ের তথ্য ব্যবহার করে
+                পরীক্ষার সঠিক ফরম্যাটে উত্তর তৈরি করে দেয়।
+            </p>
+            <div class="hero-buttons">
+                <a href="index.html" class="btn-primary">🚀 এখনই চ্যাট শুরু করো</a>
+                <a href="#features" class="btn-secondary">বিস্তারিত জানো</a>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-item">
+                    <span class="number">১৩</span>
+                    <span class="label">পাঠ্যবই</span>
+                </div>
+                <div class="hero-stat-item">
+                    <span class="number">৬ষ্ঠ-১০ম</span>
+                    <span class="label">শ্রেণি</span>
+                </div>
+                <div class="hero-stat-item">
+                    <span class="number">SSC</span>
+                    <span class="label">পরীক্ষার ফরম্যাট</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="hero-card">
+                <div class="chat-preview">
+                    <div class="message user">
+                        সালোকসংশ্লেষণ কী? ব্যাখ্যা করো।
+                    </div>
+                    <div class="message ai">
+                        <strong>উত্তর:</strong> সালোকসংশ্লেষণ হলো সবুজ উদ্ভিদের সূর্যালোকের উপস্থিতিতে কার্বন ডাই-অক্সাইড ও পানি ব্যবহার করে খাদ্য তৈরি করার প্রক্রিয়া।
+                        <br><br>
+                        এই প্রক্রিয়ায় উদ্ভিদের পাতার ক্লোরোপ্লাস্টে ক্লোরোফিল নামক রঞ্জক পদার্থ সূর্যালোক শোষণ করে...
+                        <span class="source">📖 উৎস: Biology.pdf (পৃষ্ঠা ৪৫)</span>
+                    </div>
+                    <div class="composer-preview">
+                        <input type="text" placeholder="তোমার প্রশ্ন লেখো..." value="সালোকসংশ্লেষণ কী? ব্যাখ্যা করো।">
+                        <button class="send-preview">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Class Levels -->
+    <section class="class-levels" id="classes">
+        <h2>📚 সকল শ্রেণির জন্য</h2>
+        <p class="subtitle">ষষ্ঠ থেকে দশম শ্রেণি — প্রতিটি স্তরের জন্য প্রস্তুত</p>
+        <div class="class-grid">
+            <div class="class-card">
+                <span class="class-icon">📖</span>
+                <div class="class-name">ষষ্ঠ শ্রেণি</div>
+                <div class="class-count">মাধ্যমিকের শুরু</div>
+            </div>
+            <div class="class-card">
+                <span class="class-icon">📚</span>
+                <div class="class-name">সপ্তম শ্রেণি</div>
+                <div class="class-count">জ্ঞানের প্রসার</div>
+            </div>
+            <div class="class-card">
+                <span class="class-icon">📘</span>
+                <div class="class-name">অষ্টম শ্রেণি</div>
+                <div class="class-count">মাধ্যমিকের মাইলফলক</div>
+            </div>
+            <div class="class-card">
+                <span class="class-icon">🔬</span>
+                <div class="class-name">নবম শ্রেণি</div>
+                <div class="class-count">বিজ্ঞান ও মানবিক</div>
+            </div>
+            <div class="class-card">
+                <span class="class-icon">🎯</span>
+                <div class="class-name">দশম শ্রেণি</div>
+                <div class="class-count">SSC পরীক্ষার প্রস্তুতি</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="features">
+        <h2>কীভাবে সহপাঠী AI তোমাকে সাহায্য করে?</h2>
+        <p class="subtitle">ষষ্ঠ থেকে দশম শ্রেণির সব বিষয়ে — পরীক্ষার প্রস্তুতিতে তোমার সবচেয়ে বড় সঙ্গী</p>
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="icon">📚</span>
+                <h3>NCTB পাঠ্যবইভিত্তিক</h3>
+                <p>ষষ্ঠ থেকে দশম শ্রেণির ১৩টি পাঠ্যবইয়ের তথ্য ব্যবহার করে উত্তর তৈরি করে।</p>
+            </div>
+            <div class="feature-card">
+                <span class="icon">✍️</span>
+                <h3>পরীক্ষার ফরম্যাটে উত্তর</h3>
+                <p>ক, খ, গ, ঘ — প্রতিটি প্রশ্নের উত্তর পরীক্ষার খাতায় লেখার উপযোগী ফরম্যাটে দেয়।</p>
+            </div>
+            <div class="feature-card">
+                <span class="icon">📖</span>
+                <h3>উৎস সহ উত্তর</h3>
+                <p>কোথা থেকে উত্তরটি নেওয়া হয়েছে, তার উৎস ও পৃষ্ঠা নম্বর দেখায়।</p>
+            </div>
+            <div class="feature-card">
+                <span class="icon">⚡</span>
+                <h3>বাংলা ও ইংরেজি</h3>
+                <p>বাংলা এবং ইংরেজি — উভয় ভাষায় প্রশ্ন করতে পারো এবং উত্তর পেতে পারো।</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Subjects -->
+    <section class="subjects-section" id="subjects">
+        <h2>বিষয়সমূহ</h2>
+        <p class="subtitle">ষষ্ঠ থেকে দশম শ্রেণির সব গুরুত্বপূর্ণ বিষয়</p>
+        <div class="subjects-grid">
+            <div class="subject-tag">
+                <span class="sub-icon">📖</span>
+                বাংলা ১ম পত্র
+                <span class="class-badge">৬ষ্ঠ-১০ম</span>
+            </div>
+            <div class="subject-tag">
+                <span class="sub-icon">📝</span>
+                বাংলা ২য় পত্র
+                <span class="class-badge">৬ষ্ঠ-১০ম</span>
+            </div>
+            <div class="subject-tag">
+                <span class="sub-icon">📘</span>
+                ইংরেজি ১ম পত্র
+                <span class="class-badge">৬ষ্ঠ-১০ম</span>
+            </div>
+            <div class="subject-tag">
+                <span class="sub-icon">📗</span>
+                ইংরেজি ২য় পত্র
+                <span class="class-badge">৬ষ্ঠ-১০ম</span>
+            </div>
+            <div class="subject-tag">
+                <span class="sub-icon">📐</span>
+                গণিত
+                <span class="class-badge">৬ষ্ঠ-১০ম</span>
+            </div>
+            <div class="subject-tag">
+                <span class="sub-icon">🌍</span>
+                বাংলাদেশ ও বিশ্বপরিচয়
+                <span class="class-badge">৬ষ্ঠ-১০ম</span>
+            </div>
+            <div class="subject-tag">
+                <span class="sub-icon">🔬</span>
+                বিজ্ঞান
+                <span class="class-badge">৬ষ্ঠ-১০ম</span>
+            </div>
+            <div class="subject-tag">
+                <span class="sub-icon">🕌</span>
+                ইসলাম ও নৈতিক শিক্ষা
+                <span class="class-badge">৬ষ্ঠ-১০ম</span>
+            </div>
+            <div class="subject-tag">
+                <span class="sub-icon">⚡</span>
+                পদার্থবিজ্ঞান
+                <span class="class-badge">৯ম-১০ম</span>
+            </div>
+            <div class="subject-tag">
+                <span class="sub-icon">🧪</span>
+                রসায়ন
+                <span class="class-badge">৯ম-১০ম</span>
+            </div>
+            <div class="subject-tag">
+                <span class="sub-icon">🧬</span>
+                জীববিজ্ঞান
+                <span class="class-badge">৯ম-১০ম</span>
+            </div>
+            <div class="subject-tag">
+                <span class="sub-icon">📊</span>
+                উচ্চতর গণিত
+                <span class="class-badge">৯ম-১০ম</span>
+            </div>
+            <div class="subject-tag">
+                <span class="sub-icon">💻</span>
+                ICT
+                <span class="class-badge">৯ম-১০ম</span>
+            </div>
+            <div class="subject-tag">
+                <span class="sub-icon">📚</span>
+                বাংলা সহপাঠ
+                <span class="class-badge">৯ম-১০ম</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <div class="cta-box">
+            <h2>🎯 এখনই প্রস্তুতি শুরু করো</h2>
+            <p>
+                সহপাঠী AI-তে তোমার পাঠ্যবইয়ের যেকোনো অধ্যায় থেকে প্রশ্ন করো
+                এবং পরীক্ষার ফরম্যাটে উত্তর পেয়ে যাও।
+            </p>
+            <a href="index.html" class="btn-white">🚀 চ্যাট শুরু করো</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© ২০২৬ সহপাঠী AI · ষষ্ঠ থেকে দশম শ্রেণির শিক্ষার্থীদের জন্য</p>
+        <div class="footer-links">
+            <a href="#">প্রাইভেসি</a>
+            <a href="#">সাপোর্ট</a>
+            <a href="index.html">চ্যাট</a>
+        </div>
+    </footer>
+
+    <script>
+        // Apply config
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set brand name
+            const brandName = typeof SITE_CONFIG !== 'undefined' 
+                ? (SITE_CONFIG.brand.logo.type === 'text' 
+                    ? SITE_CONFIG.brand.logo.text.fullName 
+                    : SITE_CONFIG.brand.name)
+                : 'সহপাঠী AI';
+            
+            document.querySelectorAll('.logo-text, .brand-name').forEach(el => {
+                if (el) el.textContent = brandName;
+            });
+            
+            // Set brand mark
+            if (typeof SITE_CONFIG !== 'undefined' && SITE_CONFIG.brand.logo.type === 'text') {
+                document.querySelectorAll('.logo-mark, .brand-mark').forEach(el => {
+                    if (el) el.textContent = SITE_CONFIG.brand.logo.text.letter;
+                });
+            }
+            
+            // Set footer copyright
+            if (typeof SITE_CONFIG !== 'undefined') {
+                const footerEl = document.getElementById('footerCopyright');
+                if (footerEl) footerEl.textContent = SITE_CONFIG.footer.copyright;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -62,7 +62,7 @@ window.showLanding = function() {
   showLanding();
 };
 
-// ---------- Sidebar Toggle (Mobile only) ----------
+// ---------- Sidebar Toggle ----------
 function toggleSidebar() {
   if (window.innerWidth <= 768) {
     sidebar.classList.toggle('open');
@@ -217,7 +217,6 @@ function loadChat(id){
 }
 
 // ---------- Settings / storage panel ----------
-// Settings button - opens settings overlay (both desktop and mobile)
 document.getElementById('settingsBtn').addEventListener('click', function(e) {
   e.stopPropagation();
   e.preventDefault();
