@@ -3,3 +3,10 @@ sohopathi-worker/node_modules/
 .wrangler/
 *.log
 .DS_Store
+pdfs/
+*.pdf
+extracted_texts.json
+extracted_texts_empty_backup.json
+chunks.json
+chunks_with_embeddings.json
+downloaded_pdfs/

@@ -37,7 +37,7 @@ async function getQueryEmbedding(text: string, hfApiKey: string) {
   return res.json() as Promise<number[]>;
 }
 
-function findTopChunks(queryEmbedding: number[], topN = 2) {
+function findTopChunks(queryEmbedding: number[], topN = 3) {
   const scored = (chunks as any[]).map(chunk => ({
     chunk,
     score: cosineSimilarity(queryEmbedding, chunk.embedding)
@@ -46,7 +46,7 @@ function findTopChunks(queryEmbedding: number[], topN = 2) {
   return scored.slice(0, topN);
 }
 
-const RELEVANCE_THRESHOLD = 0.35;
+const RELEVANCE_THRESHOLD = 0.25; // Lowered to get more matches
 
 function buildPrompt(question: string, studentClass: string, context: string, history: ChatMessage[]): string {
   let historyText = '';
@@ -55,11 +55,14 @@ function buildPrompt(question: string, studentClass: string, context: string, hi
     historyText = lastFew.map(m => `${m.role === 'user' ? 'শিক্ষার্থী' : 'সহপাঠী AI'}: ${m.text}`).join('\n');
   }
 
+  // If no context, add a note
+  const contextNote = context || '(এই বিষয়ে নির্দিষ্ট কোনো অধ্যায়ের তথ্য এখনো যোগ করা হয়নি। অনুগ্রহ করে শুধুমাত্র NCERT/বাংলাদেশের পাঠ্যবই সম্পর্কিত প্রশ্ন করুন।)';
+
   // Use the prompt template from the file
   let prompt = promptTemplate
     .replace(/\{studentClass\}/g, studentClass || 'ষষ্ঠ থেকে দশম শ্রেণির')
     .replace(/\{historyText\}/g, historyText)
-    .replace(/\{context\}/g, context || '(এই বিষয়ে নির্দিষ্ট কোনো অধ্যায়ের তথ্য এখনো যোগ করা হয়নি — সাধারণ জ্ঞান থেকে উত্তর দাও)')
+    .replace(/\{context\}/g, contextNote)
     .replace(/\{question\}/g, question);
 
   return prompt;
@@ -157,6 +160,7 @@ export default {
         });
       }
 
+      // If image is attached, use vision model
       if (image) {
         const answer = await askVisionModel(question, studentClass, image, env.OLLAMA_API_KEY);
         return new Response(JSON.stringify({ answer }), {
@@ -164,10 +168,21 @@ export default {
         });
       }
 
+      // Get embeddings and find relevant chunks
       const queryEmbedding = await getQueryEmbedding(question, env.HF_API_KEY);
-      const topScored = findTopChunks(queryEmbedding, 2);
+      const topScored = findTopChunks(queryEmbedding, 3);
+      
+      // Filter by relevance threshold
       const relevantChunks = topScored.filter(s => s.score >= RELEVANCE_THRESHOLD);
-      const context = relevantChunks.map(s => s.chunk.text).join('\n\n');
+      
+      // Build context from relevant chunks
+      let context = '';
+      if (relevantChunks.length > 0) {
+        context = relevantChunks.map(s => s.chunk.text).join('\n\n');
+      } else {
+        // If no relevant chunks found, use a default message
+        context = '';
+      }
 
       const answer = await askModel(question, studentClass, context, history || [], env.OLLAMA_API_KEY);
       return new Response(JSON.stringify({ answer }), {

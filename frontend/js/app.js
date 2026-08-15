@@ -10,6 +10,7 @@ const topbarClass = document.getElementById('topbarClass');
 const sidebar = document.getElementById('sidebar');
 const sidebarOverlay = document.getElementById('sidebarOverlay');
 const menuBtn = document.getElementById('menuBtn');
+const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
 const themeToggle = document.getElementById('themeToggle');
 const settingsOverlay = document.getElementById('settingsOverlay');
 
@@ -19,19 +20,75 @@ let attachedImageBase64 = null;
 const CHATS_KEY = 'sohopathi_chats';
 let currentChatId = null;
 
-// ---------- Sidebar Toggle ----------
+// ---------- Custom Modal for Confirm ----------
+function showConfirmModal(message, onConfirm, onCancel) {
+  const overlay = document.createElement('div');
+  overlay.className = 'custom-modal-overlay';
+  overlay.innerHTML = `
+    <div class="custom-modal">
+      <div class="custom-modal-icon">⚠️</div>
+      <div class="custom-modal-message">${message}</div>
+      <div class="custom-modal-actions">
+        <button class="custom-modal-btn cancel" id="modalCancel">বাতিল</button>
+        <button class="custom-modal-btn confirm" id="modalConfirm">নিশ্চিত</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  const confirmBtn = overlay.querySelector('#modalConfirm');
+  const cancelBtn = overlay.querySelector('#modalCancel');
+
+  confirmBtn.addEventListener('click', () => {
+    overlay.remove();
+    if (onConfirm) onConfirm();
+  });
+
+  cancelBtn.addEventListener('click', () => {
+    overlay.remove();
+    if (onCancel) onCancel();
+  });
+
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      overlay.remove();
+      if (onCancel) onCancel();
+    }
+  });
+}
+
+// Expose showLanding globally for onclick in HTML
+window.showLanding = function() {
+  showLanding();
+};
+
+// ---------- Sidebar Toggle (Mobile only) ----------
 function toggleSidebar() {
-  sidebar.classList.toggle('open');
-  sidebarOverlay.classList.toggle('open');
+  if (window.innerWidth <= 768) {
+    sidebar.classList.toggle('open');
+    sidebarOverlay.classList.toggle('open');
+  }
 }
 
 function closeSidebar() {
-  sidebar.classList.remove('open');
-  sidebarOverlay.classList.remove('open');
+  if (window.innerWidth <= 768) {
+    sidebar.classList.remove('open');
+    sidebarOverlay.classList.remove('open');
+  }
 }
 
-menuBtn.addEventListener('click', toggleSidebar);
+// Close sidebar when clicking outside (mobile only)
 sidebarOverlay.addEventListener('click', closeSidebar);
+
+// Close sidebar with Escape key (mobile only)
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && window.innerWidth <= 768 && sidebar.classList.contains('open')) {
+    closeSidebar();
+  }
+});
+
+menuBtn.addEventListener('click', toggleSidebar);
+sidebarCloseBtn.addEventListener('click', closeSidebar);
 
 // ---------- Theme Toggle ----------
 const savedTheme = localStorage.getItem('sohopathi_theme');
@@ -160,7 +217,11 @@ function loadChat(id){
 }
 
 // ---------- Settings / storage panel ----------
-document.getElementById('settingsBtn').addEventListener('click', ()=>{
+// Settings button - opens settings overlay (both desktop and mobile)
+document.getElementById('settingsBtn').addEventListener('click', function(e) {
+  e.stopPropagation();
+  e.preventDefault();
+  
   const chats = loadChats();
   document.getElementById('statChatCount').textContent = chats.length;
   const bytes = new Blob([JSON.stringify(chats)]).size;
@@ -168,20 +229,46 @@ document.getElementById('settingsBtn').addEventListener('click', ()=>{
   settingsOverlay.classList.add('open');
   closeSidebar();
 });
-document.getElementById('settingsClose').addEventListener('click', ()=>{
+
+// Handle any other settings buttons
+document.querySelectorAll('.settings-btn').forEach(function(btn) {
+  if (btn.id === 'settingsBtn') return;
+  
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    
+    const chats = loadChats();
+    document.getElementById('statChatCount').textContent = chats.length;
+    const bytes = new Blob([JSON.stringify(chats)]).size;
+    document.getElementById('statStorageSize').textContent = (bytes/1024).toFixed(1) + ' KB';
+    settingsOverlay.classList.add('open');
+    closeSidebar();
+  });
+});
+
+document.getElementById('settingsClose').addEventListener('click', function() {
   settingsOverlay.classList.remove('open');
 });
-settingsOverlay.addEventListener('click', (e)=>{
-  if(e.target === settingsOverlay) settingsOverlay.classList.remove('open');
-});
-document.getElementById('clearDataBtn').addEventListener('click', ()=>{
-  if(confirm('তুমি কি নিশ্চিত? সব সংরক্ষিত চ্যাট মুছে যাবে, এটি ফিরিয়ে আনা যাবে না।')){
-    localStorage.removeItem(CHATS_KEY);
-    currentChatId = null;
-    renderHistoryList();
+
+settingsOverlay.addEventListener('click', function(e) {
+  if (e.target === settingsOverlay) {
     settingsOverlay.classList.remove('open');
-    showLanding();
   }
+});
+
+// Clear data with custom modal
+document.getElementById('clearDataBtn').addEventListener('click', function() {
+  showConfirmModal(
+    'তুমি কি নিশ্চিত? সব সংরক্ষিত চ্যাট মুছে যাবে, এটি ফিরিয়ে আনা যাবে না।',
+    function() {
+      localStorage.removeItem(CHATS_KEY);
+      currentChatId = null;
+      renderHistoryList();
+      settingsOverlay.classList.remove('open');
+      showLanding();
+    }
+  );
 });
 renderHistoryList();
 
